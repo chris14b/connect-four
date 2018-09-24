@@ -36,7 +36,7 @@ public class Game {
         Grid grid = new Grid(colours);
         players.add(new HumanPlayer(colours.get(0)));
 //        players.add(new ComputerPlayer(colours.get(0), colours.get(1), grid, 7));
-        players.add(new ComputerPlayer(colours.get(1), colours.get(0), grid, 7));
+        players.add(new ComputerPlayer(colours.get(1), grid, 7));
         Game game = new Game(grid, players);
         game.run();
     }
