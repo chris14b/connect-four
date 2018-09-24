@@ -26,7 +26,6 @@ public class ComputerPlayer extends Player {
     }
 
     public int chooseColumn() {
-        updateLoadingBar(0);
         int move = getWinningMove(grid, super.myColour);
         int returnCol;
 
@@ -45,13 +44,17 @@ public class ComputerPlayer extends Player {
 
                 Grid nextGrid = grid.getGridIfDiscPlaced(super.myColour, col);
                 scores.add(new Pair<>(col, getScore(nextGrid, 1)));
-//                System.out.println("Column " + col + ": score = " + scores.get(scores.size() - 1).getValue());
+            }
+
+            updateLoadingBar(1);
+
+            for (Pair<Integer, Integer> score: scores) {
+                System.out.println("Column " + score.getKey() + ": score = " + score.getValue());
             }
 
             returnCol = getKeyOfMax(scores);
         }
 
-        updateLoadingBar(1);
         int outputCol = returnCol + 1;
         System.out.println("Column: " + outputCol);
         return returnCol;
@@ -66,6 +69,7 @@ public class ComputerPlayer extends Player {
 
         if (winner == grid.getLastColour()) {
 //            System.out.println("Win detected for " + grid.getWinner() + " at depth " + currDepth);
+//            grid.show();
             int score = maxDepth - currDepth + 1;
 
             if (winner == super.myColour) {
@@ -86,14 +90,11 @@ public class ComputerPlayer extends Player {
                 }
 
                 Grid nextGrid = grid.getGridIfDiscPlaced(grid.getNextColour(), col);
-                scores.add(new Pair<>(col, getScore(nextGrid, currDepth + 1)));
+                int score = getScore(nextGrid, currDepth + 1);
+                scores.add(new Pair<>(col, score));
             }
 
-//            if (grid.getLastColour() == super.myColour) {
-                return getMostExtreme(scores);
-//            } else {
-//                return getMax(scores);
-//            }
+            return getMostExtreme(scores);
         } else {
             Grid nextGrid = grid.getGridIfDiscPlaced(grid.getNextColour(), winningMove);
             return getScore(nextGrid, currDepth + 1);
@@ -148,16 +149,6 @@ public class ComputerPlayer extends Player {
         }
 
         return maxes.get(ThreadLocalRandom.current().nextInt(0, maxes.size())).getKey();
-    }
-
-    private static int getMax(List<Pair<Integer, Integer>> list) {
-        int maxValue = list.get(0).getValue();
-
-        for (int i = 1; i < list.size(); i++) {
-            maxValue = Math.max(maxValue, list.get(i).getValue());
-        }
-
-        return maxValue;
     }
 
     private void updateLoadingBar(float progress) {
